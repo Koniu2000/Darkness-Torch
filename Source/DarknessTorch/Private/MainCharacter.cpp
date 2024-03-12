@@ -57,7 +57,15 @@ void AMainCharacter::Move(const FInputActionValue& Value)
 	AddMovementInput(ForwardDirection, DirectionVector.Y);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 	AddMovementInput(RightDirection, DirectionVector.X);
-	GetCharacterMovement()->MaxWalkSpeed = 350.f;
+	if (CharacterPoseState == ECharacterPoseState::ECPS_Stand)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 350.f;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 150.f;
+	}
+	
 }
 
 void AMainCharacter::Look(const FInputActionValue& Value)
@@ -86,13 +94,25 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainCharacter::Look);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &AMainCharacter::Equip);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AMainCharacter::Crouch);
 	}
 }
 
 void AMainCharacter::Jump()
 {
 	Super::Jump();
-	Jumping = true;
+}
+
+void AMainCharacter::Crouch()
+{
+	if (CharacterPoseState == ECharacterPoseState::ECPS_Stand)
+	{
+		CharacterPoseState = ECharacterPoseState::ECPS_Crouch;
+	}
+	else
+	{
+		CharacterPoseState = ECharacterPoseState::ECPS_Stand;
+	}
 }
 
 void AMainCharacter::Equip()
@@ -100,6 +120,7 @@ void AMainCharacter::Equip()
 	if (OverlappingTorch)
 	{
 		OverlappingTorch->Equip(GetMesh(), FName("LeftHandSocket"));
+		CharacterState = ECharacterState::ECS_TorchEquipped;
 	}
 }
 

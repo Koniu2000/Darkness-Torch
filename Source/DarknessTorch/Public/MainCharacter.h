@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "CharacterTypes.h"
 #include "MainCharacter.generated.h"
-
 
 UCLASS()
 class DARKNESSTORCH_API AMainCharacter : public ACharacter
@@ -19,7 +19,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
-	bool Jumping;
+	void Crouch();
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,6 +28,9 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void Equip();
 
+	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+
+	ECharacterPoseState CharacterPoseState = ECharacterPoseState::ECPS_Stand;
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputMappingContext* CharacterMappingContext;
@@ -44,6 +47,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* EquipAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	class UInputAction* CrouchAction;
+
 	UPROPERTY(EditAnywhere)
 	class USpringArmComponent* SpringArm;
 
@@ -55,5 +61,6 @@ protected:
 
 public:
 	FORCEINLINE void SetOverlappingTorch(ATorch* Torch) { OverlappingTorch = Torch; }
-
+	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
+	FORCEINLINE ECharacterPoseState GetCharacterPoseState() const { return CharacterPoseState; }
 };

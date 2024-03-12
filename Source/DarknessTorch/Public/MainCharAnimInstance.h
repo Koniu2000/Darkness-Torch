@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "CharacterTypes.h"
 #include "MainCharAnimInstance.generated.h"
 
 /**
@@ -30,5 +31,8 @@ public:
 	bool IsFalling;
 
 	UPROPERTY(BlueprintReadOnly)
-	bool IsJumping;
+	ECharacterState CharacterState;
+
+	UPROPERTY(BlueprintReadOnly)
+	ECharacterPoseState CharacterPoseState;
 };

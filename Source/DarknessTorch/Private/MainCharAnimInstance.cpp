@@ -24,17 +24,8 @@ void UMainCharAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	if (MainCharacterMovement)
 	{
 		GroundSpeed = UKismetMathLibrary::VSizeXY(MainCharacterMovement->Velocity);
-		if (MainCharacter->Jumping == true)
-		{
-			IsJumping = true;
-		}
-
 		IsFalling = MainCharacterMovement->IsFalling();
-		if (IsFalling == MainCharacterMovement->IsFalling())
-		{
-			MainCharacter->Jumping = false;
-			IsJumping = false;
-		}
-		
+		CharacterState = MainCharacter->GetCharacterState();
+		CharacterPoseState = MainCharacter->GetCharacterPoseState();
 	}
 }
